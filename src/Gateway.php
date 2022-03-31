@@ -5,6 +5,8 @@ namespace Digitickets\OmnipayGooglePayWithStripe;
 use Stripe\StripeClient as Stripe;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\RequestInterface;
+use Guzzle\Http\Client as ClientInterface;
+use Digitickets\OmnipayGooglePayWithStripe\Message\PurchaseRequest;
 
 class Gateway extends AbstractGateway
 {
@@ -56,7 +58,6 @@ class Gateway extends AbstractGateway
      */
     public function getName() : string
     {
-        \Log::info('getName');
         return 'GooglePay with Stripe';
     }
 
@@ -92,8 +93,10 @@ class Gateway extends AbstractGateway
      */
     public function purchase(array $parameters = []): RequestInterface
     {
-        // dd($parameters);
-
-        return $this->createRequest('\Digitickets\OmnipayGooglePayWithStripe\Message\PurchaseRequest', $parameters);
+        return $this->createRequest(
+            PurchaseRequest::class,
+            // '\Digitickets\OmnipayGooglePayWithStripe\Message\PurchaseRequest',
+            $parameters
+        );
     }
 }

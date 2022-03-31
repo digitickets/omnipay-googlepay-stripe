@@ -4,9 +4,9 @@ namespace Digitickets\OmnipayGooglePayWithStripe\Message;
 
 use Stripe\StripeClient as Stripe;
 use Omnipay\Common\Exception\InvalidRequestException;
-use Omnipay\Common\Http\ClientInterface;
 use Omnipay\Common\Message\AbstractRequest as BaseAbstractRequest;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Guzzle\Http\Client;
 
 /**
  * Abstract Request.
@@ -23,12 +23,12 @@ abstract class AbstractRequest extends BaseAbstractRequest
     /**
      * Create a new Request.
      *
-     * @param ClientInterface $httpClient  A Guzzle client to make API calls with
+     * @param Client $httpClient  A Guzzle client to make API calls with
      * @param HttpRequest     $httpRequest A Symfony HTTP request object
      * @param Stripe          $stripe      The Stripe Gateway
      */
     public function __construct(
-        ClientInterface $httpClient,
+        Client $httpClient,
         HttpRequest $httpRequest,
         Stripe $stripe
     ) {
