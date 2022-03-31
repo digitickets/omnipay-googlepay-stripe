@@ -27,17 +27,6 @@ class PurchaseRequest extends AbstractRequest
     {
         $token = json_decode($this->getToken());
 
-        return [
-            'source' => $token->id,
-            'amount' => $this->getAmount(),
-            'currency' => $this->getCurrency(),
-            'description' => $this->getDescription(),
-            'shipping' => $this->getShipping(),
-            // 'billing' => $this->getBilling(),
-            // 'metadata' => $this->getMetaData(),
-            // 'status' => $this->getStatus(),
-        ];
-
         /**
          * Token example
          * {
@@ -67,6 +56,22 @@ class PurchaseRequest extends AbstractRequest
          *   }
          * }
          */
+
+        $metadata = $this->getMetaData();
+        if ($metadata && isset($metadata[0])) {
+            $metadata = array_map('strval', $metadata[0]); // all metadata values must be strings
+        }
+
+        return [
+            'source' => $token->id,
+            'amount' => $this->getAmount() * 100, // we receive amount in cents
+            'currency' => $this->getCurrency(),
+            'description' => $this->getDescription(),
+            'shipping' => $this->getShipping(),
+            'metadata' => $metadata,
+            // 'billing' => $this->getBilling(),
+            // 'status' => $this->getStatus(),
+        ];
 
         return $data;
     }
