@@ -49,215 +49,225 @@ abstract class AbstractRequest extends BaseAbstractRequest
         return parent::send();
     }
 
+    /**
+     * Config
+     *
+     * @return void
+     */
     public function configure()
     {
         //empty for now
     }
 
-    public function getSecretKey()
+    /**
+     * Return the secret key
+     *
+     * @return string
+     */
+    public function getSecretKey(): string
     {
         return $this->getParameter('secretKey');
     }
 
-    // public function setSecretKey($value)
-    // {
-    //     return $this->setParameter('secretKey', $value);
-    // }
-
-    public function getAmount()
+    /**
+     * Return the payment token
+     *
+     * @return string
+     */
+    public function getSource(): string
     {
-        return floatval($this->getParameter('amount'));
+        $token = json_decode($this->getToken());
+
+        return $token->id;
+
+        /**
+         * Token example
+         * {
+         *   "id": "tok_1KZLVHDtx4Fjr45S7Kd8DpLW",
+         *   "object": "token",
+         *   "card": {
+         *     "id": "card_1KZLVHDtx4Fjr45SdaeeTPTc",
+         *     "object": "card",
+         *     "address_city": null,
+         *     "address_country": null,
+         *     "address_line1": null,
+         *     "address_line1_check": null,
+         *     "address_line2": null,
+         *     "address_state": null,
+         *     "address_zip": null,
+         *     "address_zip_check": null,
+         *     "brand": "Visa",
+         *     "country": "US",
+         *     "cvc_check": null,
+         *     "dynamic_last4": "4242",
+         *     "exp_month": 12,
+         *     "exp_year": 2024,
+         *     "funding": "credit",
+         *     "last4": "1111",
+         *     "metadata": {
+         *     }
+         *   }
+         * }
+         */
     }
 
-    public function getCurrency()
+    /**
+     * Return amount (in cents)
+     *
+     * @return float
+     */
+    public function getAmount(): float
+    {
+        return 100 // convert to cents
+            * floatval($this->getParameter('amount'));
+    }
+
+    /**
+     * Return currency code
+     *
+     * @return string
+     */
+    public function getCurrency(): string
     {
         return $this->getParameter('currency');
     }
 
-    public function getDescription()
+    /**
+     * Return description
+     *
+     * @return string
+     */
+    public function getDescription(): string
     {
         return $this->getParameter('description');
     }
 
-    public function getShipping()
+    /**
+     * Return shipping details
+     *
+     * @return array
+     */
+    public function getShipping(): array
     {
-        $form = $this->getForm();
+        $card = $this->getCard();
 
         return [
             'address' => [
-                'city' => $form['shippingCity'],
-                'country' => $form['shippingCountry'],
-                'line1' => $form['shippingAddress1'],
-                'line2' => $form['shippingAddress2'],
-                'postal_code' => $form['shippingPostcode'],
-                'state' => $form['shippingState'],
+                'city' => $card->getShippingCity(),
+                'country' => $card->getShippingCountry(),
+                'line1' => $card->getShippingAddress1(),
+                'line2' => $card->getShippingAddress2(),
+                'postal_code' => $card->getShippingPostcode(),
+                'state' => $card->getShippingState(),
             ],
-            'name' => $form['firstName'] . ' '. $form['lastName'],
-            'phone' => $form['shippingPhone'],
+            'name' => $card->getShippingFirstName() . ' ' . $card->getShippingLastName(),
+            'phone' => $card->getShippingPhone(),
         ];
     }
 
-    public function getBilling()
+    /**
+     * Return billing details
+     *
+     * @return array
+     */
+    public function getBilling(): array
     {
-        $form = $this->getForm();
+        $card = $this->getCard();
 
         return [
             'address' => [
-                'city' => $form['billingCity'],
-                'country' => $form['billingCountry'],
-                'line1' => $form['billingAddress1'],
-                'line2' => $form['billingAddress2'],
-                'postal_code' => $form['billingPostCode'],
-                'state' => $form['billingState'],
+                'city' => $card->getBillingCity(),
+                'country' => $card->getBillingCountry(),
+                'line1' => $card->getBillingAddress1(),
+                'line2' => $card->getBillingAddress2(),
+                'postal_code' => $card->getBillingPostcode(),
+                'state' => $card->getBillingState(),
             ],
-            'email' => $form['email'],
-            'name' => $form['firstName'] . ' '. $form['lastName'],
-            'phone' => $form['billingPhone'],
+            'email' => $card->getEmail(),
+            'name' => $card->getBillingFirstName() . ' ' . $card->getBillingLastName(),
+            'phone' => $card->getBillingPhone(),
         ];
     }
 
-    public function getStatus()
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus(): string
     {
         return 'succeeded'; //'pending', 'failed'
     }
 
-    public function getMetaData()
+    /**
+     * Get metadata
+     *
+     * @return array
+     */
+    public function getMetaData(): array
     {
         $meta = [];
+        $count = 0;
 
+        // all metadata values must be strings
         foreach ($this->getItems() as $item) {
-            $meta[] = [
-                'name' => $item->getName(),
-                'description' => $item->getDescription(),
-                'price' => $item->getPrice(),
-                'quantity' => $item->getQuantity(),
-            ];
+            $key = 'item' . ++$count;
+            $meta[$key . '_name'] = strval($item->getName());
+            $meta[$key . '_description'] = strval($item->getDescription());
+            $meta[$key . '_price'] = strval($item->getPrice());
+            $meta[$key . '_quantity'] = strval($item->getQuantity());
         }
 
         return $meta;
     }
 
+    /**
+     * Get Form
+     */
     public function getForm()
     {
         return $this->getParameter('form');
     }
 
+    /**
+     * set Form
+     *
+     * @param [type] $value
+     * @return void
+     */
     public function setForm($value)
     {
         return $this->setParameter('form', $value);
     }
 
+    /**
+     * Return items
+     *
+     * @return array
+     */
     public function getItems()
     {
         return $this->getParameter('items');
     }
 
+    /**
+     * Set items
+     *
+     * @param array $value
+     * @return array
+     */
     public function setItems($value)
     {
         return $this->setParameter('items', $value);
     }
 
     /**
-     * @return array
+     * Creates a response
+     *
+     * @param [type] $data
+     * @return Response
      */
-    // public function getCardData()
-    // {
-    //     $card = $this->getCard();
-
-    //     if (! $card) {
-    //         return [];
-    //     }
-
-    //     return [
-    //         'billing' => [
-    //             'company' => $card->getBillingCompany(),
-    //             'firstName' => $card->getBillingFirstName(),
-    //             'lastName' => $card->getBillingLastName(),
-    //             'streetAddress' => $card->getBillingAddress1(),
-    //             'extendedAddress' => $card->getBillingAddress2(),
-    //             'locality' => $card->getBillingCity(),
-    //             'postalCode' => $card->getBillingPostcode(),
-    //             'region' => $card->getBillingState(),
-    //             'countryName' => $card->getBillingCountry(),
-    //         ],
-    //         'shipping' => [
-    //             'company' => $card->getShippingCompany(),
-    //             'firstName' => $card->getShippingFirstName(),
-    //             'lastName' => $card->getShippingLastName(),
-    //             'streetAddress' => $card->getShippingAddress1(),
-    //             'extendedAddress' => $card->getShippingAddress2(),
-    //             'locality' => $card->getShippingCity(),
-    //             'postalCode' => $card->getShippingPostcode(),
-    //             'region' => $card->getShippingState(),
-    //             'countryName' => $card->getShippingCountry(),
-    //         ],
-    //     ];
-    // }
-
-    /**
-     * @return array
-     */
-    // public function getOptionData()
-    // {
-    //     $data = [
-    //         'addBillingAddressToPaymentMethod' => $this->getAddBillingAddressToPaymentMethod(),
-    //         'failOnDuplicatePaymentMethod' => $this->getFailOnDuplicatePaymentMethod(),
-    //         'holdInEscrow' => $this->getHoldInEscrow(),
-    //         'makeDefault' => $this->getMakeDefault(),
-    //         'storeInVault' => $this->getStoreInVault(),
-    //         'storeInVaultOnSuccess' => $this->getStoreInVaultOnSuccess(),
-    //         'storeShippingAddressInVault' => $this->getStoreShippingAddressInVault(),
-    //         'verifyCard' => $this->getVerifyCard(),
-    //         'verificationMerchantAccountId' => $this->getVerificationMerchantAccountId(),
-    //     ];
-
-    //     // Remove null values
-    //     $data = array_filter($data, function ($value) {
-    //         return ! is_null($value);
-    //     });
-
-    //     if (empty($data)) {
-    //         return $data;
-    //     } else {
-    //         return ['options' => $data];
-    //     }
-    // }
-
-    /**
-     * @return array
-     */
-    // public function getLineItems()
-    // {
-    //     $line_items = array();
-
-    //     if (!$items = $this->getItems()) {
-    //         return $line_items;
-    //     }
-
-    //     foreach ($items as $item) {
-
-    //         $item_kind = ($item->getPrice() >= 0.00)
-    //             ? 'debit'
-    //             : 'credit';
-
-    //         $unit_amount = ($item->getQuantity() > 0)
-    //             ? $item->getPrice() / $item->getQuantity()
-    //             : $item->getPrice();
-
-    //         array_push($line_items, array(
-    //             'name' => $item->getName(),
-    //             'description' => $item->getDescription(),
-    //             'totalAmount' => abs($item->getPrice()),
-    //             'unitAmount' => abs($unit_amount),
-    //             'kind' => $item_kind,
-    //             'quantity' => $item->getQuantity(),
-    //         ));
-    //     }
-
-    //     return $line_items;
-    // }
-
-    protected function createResponse($data)
+    protected function createResponse($data): Response
     {
         return $this->response = new Response($this, $data);
     }

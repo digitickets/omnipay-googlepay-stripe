@@ -75,11 +75,22 @@ class Gateway extends AbstractGateway
         ];
     }
 
+    /**
+     * Get secret key
+     *
+     * @return void
+     */
     public function getSecretKey()
     {
         return $this->getParameter('secretKey');
     }
 
+    /**
+     * Set secret key
+     *
+     * @param [type] $value
+     * @return void
+     */
     public function setSecretKey($value)
     {
         return $this->setParameter('secretKey', $value);
@@ -95,7 +106,6 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest(
             PurchaseRequest::class,
-            // '\Digitickets\OmnipayGooglePayWithStripe\Message\PurchaseRequest',
             $parameters
         );
     }
