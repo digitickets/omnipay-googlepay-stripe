@@ -1,5 +1,5 @@
 <?php
-namespace Digitickets\OmnipayGooglePayWithStripe\Message;
+namespace DigiTickets\OmnipayGooglePayWithStripe\Message;
 
 class PurchaseRequest extends AbstractRequest
 {

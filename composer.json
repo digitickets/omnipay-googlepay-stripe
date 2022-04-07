@@ -5,7 +5,7 @@
     "keywords": ["omnipay", "googlepay", "stripe"],
     "homepage": "https://bitbucket.org/digitickets/omnipay-google-pay-stripe",
     "autoload": {
-        "psr-4": { "Digitickets\\OmnipayGooglePayWithStripe\\" : "src/" }
+        "psr-4": { "DigiTickets\\OmnipayGooglePayWithStripe\\" : "src/" }
     },
     "require": {
         "omnipay/common": "3.1.2",

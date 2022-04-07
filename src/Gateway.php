@@ -1,12 +1,12 @@
 <?php
 
-namespace Digitickets\OmnipayGooglePayWithStripe;
+namespace DigiTickets\OmnipayGooglePayWithStripe;
 
 use Stripe\StripeClient as Stripe;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\RequestInterface;
 use Guzzle\Http\Client as ClientInterface;
-use Digitickets\OmnipayGooglePayWithStripe\Message\PurchaseRequest;
+use DigiTickets\OmnipayGooglePayWithStripe\Message\PurchaseRequest;
 
 class Gateway extends AbstractGateway
 {

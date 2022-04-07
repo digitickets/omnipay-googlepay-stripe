@@ -1,6 +1,6 @@
 <?php
 
-namespace Digitickets\OmnipayGooglePayWithStripe\Message;
+namespace DigiTickets\OmnipayGooglePayWithStripe\Message;
 
 use Stripe\StripeClient as Stripe;
 use Omnipay\Common\Exception\InvalidRequestException;

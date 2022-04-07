@@ -1,5 +1,5 @@
 <?php
-namespace Digitickets\OmnipayGooglePayWithStripe\Message;
+namespace DigiTickets\OmnipayGooglePayWithStripe\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
 
