@@ -16,10 +16,5 @@
         "omnipay/tests": "~2.0",
         "squizlabs/php_codesniffer": "~1.5"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "main"
-        }
-    },
     "prefer-stable": true
 }
