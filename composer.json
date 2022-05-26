@@ -1,9 +1,9 @@
 {
-    "name": "digitickets/omnipay.googlepay.stripe",
+    "name": "digitickets/omnipay-googlepay-stripe",
     "type": "library",
     "description": "Custom OmniPay driver for Google Pay (with Stripe)",
     "keywords": ["omnipay", "googlepay", "stripe"],
-    "homepage": "https://bitbucket.org/digitickets/omnipay-google-pay-stripe",
+    "homepage": "https://github.com/digitickets/omnipay-googlepay-stripe",
     "autoload": {
         "psr-4": { "DigiTickets\\OmnipayGooglePayWithStripe\\" : "src/" }
     },

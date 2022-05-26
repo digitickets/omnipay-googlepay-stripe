@@ -15,7 +15,7 @@ to your `composer.json` file:
 ```json
 {
     "require": {
-        "digitickets/omnipay.googlepay": "^0.*"
+        "digitickets/omnipay-googlepay-stripe": "^0.1"
     }
 }
 ```
